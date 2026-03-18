@@ -249,6 +249,54 @@
     .travel-cursor { cursor: crosshair !important; }
     .travel-cursor * { cursor: crosshair !important; }
 
+    /* Wilderness Travel Panel */
+    .wilderness-content { padding: 14px; font-size: 12px; line-height: 1.6; }
+    .wilderness-content h3 {
+      color: #c8b888; font-size: 14px; margin: 14px 0 6px; padding-bottom: 4px;
+      border-bottom: 1px solid rgba(180,160,120,0.2); letter-spacing: 1px;
+    }
+    .wilderness-content h3:first-child { margin-top: 0; }
+    .wilderness-content p { color: #c0b8a8; margin: 6px 0; }
+    .wilderness-content strong { color: #c8b888; }
+    .wilderness-content ul { padding-left: 16px; margin: 4px 0; }
+    .wilderness-content li { color: #c0b8a8; margin: 3px 0; }
+    .wilderness-content table {
+      width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 11px;
+    }
+    .wilderness-content th {
+      background: rgba(180,160,120,0.15); color: #c8b888; padding: 5px 6px;
+      text-align: left; border: 1px solid rgba(180,160,120,0.2); font-weight: 600;
+      white-space: nowrap;
+    }
+    .wilderness-content td {
+      padding: 4px 6px; border: 1px solid rgba(180,160,120,0.12); color: #c0b8a8;
+    }
+    .wilderness-content tr:hover td { background: rgba(180,160,120,0.06); }
+    .wilderness-content .note { color: #888; font-size: 11px; font-style: italic; margin: 4px 0; }
+    .wilderness-title { font-size: 15px !important; text-transform: uppercase; letter-spacing: 2px; }
+    .wilderness-section { margin: 10px 0; }
+    .wilderness-section summary {
+      cursor: pointer; color: #c8b888; font-weight: 600; font-size: 12px;
+      padding: 6px 0; border-bottom: 1px solid rgba(180,160,120,0.15);
+      list-style: disclosure-closed;
+    }
+    .wilderness-section[open] summary { list-style: disclosure-open; margin-bottom: 6px; }
+    .wilderness-list { padding-left: 18px; margin: 6px 0; }
+    .wilderness-list li { color: #c0b8a8; margin: 4px 0; }
+    .wilderness-table { width: 100%; border-collapse: collapse; margin: 6px 0; font-size: 11px; }
+    .wilderness-table th {
+      background: rgba(180,160,120,0.15); color: #c8b888; padding: 5px 6px;
+      text-align: left; border: 1px solid rgba(180,160,120,0.2); font-weight: 600;
+      white-space: nowrap;
+    }
+    .wilderness-table td {
+      padding: 4px 6px; border: 1px solid rgba(180,160,120,0.12); color: #c0b8a8;
+      white-space: nowrap;
+    }
+    .wilderness-table tr:hover td { background: rgba(180,160,120,0.06); }
+    .wilderness-table-scroll { overflow-x: auto; margin: 6px 0; }
+    .wilderness-table-wide { min-width: 480px; }
+
     /* Grid number labels */
     .grid-label {
       font-family: 'Courier New', monospace;
@@ -283,6 +331,7 @@
       <div class="type-toggles" id="typeToggles"></div>
       <div class="region-toggles" id="regionToggles"></div>
       <div class="sidebar-list" id="sidebarList"></div>
+      <div class="sidebar-list" id="wildernessPanel" style="display:none;"></div>
       <div class="sidebar-footer" id="sidebarFooter">0 locations</div>
     </div>
     <div id="map"></div>

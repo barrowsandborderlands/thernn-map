@@ -7,7 +7,7 @@ const THERNN_CONFIG = {
   imageWidth: 5363,
   imageHeight: 3691,
   // Zoom range
-  minZoom: -1,
+  minZoom: -3,
   maxZoom: 5,
   defaultZoom: 0,
   // ── Grid System ───────────────────────────────────────────────
@@ -15,10 +15,10 @@ const THERNN_CONFIG = {
   // Grid squares are 59.1 px each.
   // Grid pixel origin (top-left corner of square 01.01): px(303, 193)
   grid: {
-    xMin: -4.63,   // left edge of image in grid coords
-    xMax: 86.12,   // right edge of image in grid coords
-    yMin: -2.77,   // top edge of image in grid coords
-    yMax: 59.69,   // bottom edge of image in grid coords
+    xMin: -5.63,   // left edge of image in grid coords
+    xMax: 85.12,   // right edge of image in grid coords
+    yMin: -3.77,   // top edge of image in grid coords
+    yMax: 58.69,   // bottom edge of image in grid coords
     ewMin: 1,      // first EW grid number
     ewMax: 79,     // last EW grid number
     nsMin: 1,      // first NS grid number

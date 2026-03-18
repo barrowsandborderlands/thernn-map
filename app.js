@@ -473,6 +473,13 @@
       btn.addEventListener('click', () => { activeTab = type; buildTabs(); renderList(); });
       sidebarTabsEl.appendChild(btn);
     });
+
+    // Wilderness Travel tab
+    const wildBtn = document.createElement('button');
+    wildBtn.className = 'sidebar-tab' + (activeTab === 'wilderness' ? ' active' : '');
+    wildBtn.innerHTML = `&#x1f332; Wilderness`;
+    wildBtn.addEventListener('click', () => { activeTab = 'wilderness'; buildTabs(); renderList(); });
+    sidebarTabsEl.appendChild(wildBtn);
   }
 
   function buildTypeToggles() {
@@ -521,6 +528,7 @@
     return locations.filter(loc => {
       if (!loc.visible) return false;
       if (!isTypeVisible(loc.type)) return false;
+      if (activeTab === 'wilderness') return false;
       if (activeTab !== 'all' && normalizeType(loc.type) !== activeTab) return false;
       if (q) {
         const searchable = [loc.name, loc.type, loc.description, formatGrid(loc.gridX, loc.gridY)]
@@ -531,7 +539,21 @@
     });
   }
 
+  const wildernessPanel = document.getElementById('wildernessPanel');
+
   function renderList() {
+    // Wilderness tab: show wilderness panel, hide location list
+    if (activeTab === 'wilderness') {
+      sidebarListEl.style.display = 'none';
+      wildernessPanel.style.display = '';
+      sidebarFooterEl.textContent = '';
+      typeTogglesEl.style.display = 'none';
+      regionTogglesEl.style.display = 'none';
+      return;
+    }
+    sidebarListEl.style.display = '';
+    wildernessPanel.style.display = 'none';
+
     const filtered = getFilteredLocations();
     sidebarListEl.innerHTML = '';
 
@@ -762,6 +784,136 @@
   travelResetBtn.addEventListener('click', clearTravelPoints);
   travelSpeedInput.addEventListener('input', updateTravelResult);
 
+  // ── Wilderness Travel Panel ──────────────────────────────
+
+  function buildWildernessPanel() {
+    wildernessPanel.innerHTML = `
+      <div class="wilderness-content">
+        <h3 class="wilderness-title">Wilderness Travel</h3>
+
+        <details class="wilderness-section" open>
+          <summary>Daily Procedure</summary>
+          <ol class="wilderness-list">
+            <li><strong>START</strong> — Roll for Lost &amp; Encounters at dawn.</li>
+            <li><strong>MOVE</strong> — Party moves its daily rate (squares/day).</li>
+            <li><strong>INTERACTION</strong> — Resolve encounters, exploration, foraging.</li>
+            <li><strong>CAMP</strong> — Set watches, roll night encounters.</li>
+            <li><strong>REPEAT</strong></li>
+          </ol>
+        </details>
+
+        <details class="wilderness-section" open>
+          <summary>Getting Lost &amp; Encounter Chance</summary>
+          <table class="wilderness-table">
+            <thead><tr><th>Terrain</th><th>Lost (d6)</th><th>Encounter (d6)</th></tr></thead>
+            <tbody>
+              <tr><td>Clear</td><td>1</td><td>6</td></tr>
+              <tr><td>Woods</td><td>1–2</td><td>5–6</td></tr>
+              <tr><td>River</td><td>1</td><td>5–6</td></tr>
+              <tr><td>Swamp</td><td>1–3</td><td>4–6</td></tr>
+              <tr><td>Mtns.</td><td>1–2</td><td>4–6</td></tr>
+              <tr><td>Desert</td><td>1–3</td><td>5–6</td></tr>
+              <tr><td>Ocean</td><td>1–3</td><td>4–6</td></tr>
+            </tbody>
+          </table>
+        </details>
+
+        <details class="wilderness-section">
+          <summary>Wandering Monsters (d10)</summary>
+          <div class="wilderness-table-scroll">
+          <table class="wilderness-table wilderness-table-wide">
+            <thead><tr><th>d10</th><th>Clear</th><th>Woods</th><th>River</th><th>Swamp</th><th>Mtns.</th><th>Desert</th><th>Ocean</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Men</td><td>Men</td><td>Men</td><td>Men</td><td>Men</td><td>Men</td><td>Men</td></tr>
+              <tr><td>2</td><td>Flyer</td><td>Flyer</td><td>Flyer</td><td>Flyer</td><td>Flyer</td><td>Flyer</td><td>Flyer</td></tr>
+              <tr><td>3</td><td>Man-Like</td><td>Man-Like</td><td>Man-Like</td><td>Man-Like</td><td>Man-Like</td><td>Man-Like</td><td>Undead</td></tr>
+              <tr><td>4</td><td>Lycanth.</td><td>Lycanth.</td><td>Lycanth.</td><td>Lycanth.</td><td>Lycanth.</td><td>Men</td><td>Strange</td></tr>
+              <tr><td>5</td><td>Animals</td><td>Lycanth.</td><td>Swimmer</td><td>Swimmer</td><td>Animals</td><td>Animals</td><td>Undead</td></tr>
+              <tr><td>6</td><td>Men</td><td>Men</td><td>Men</td><td>Undead</td><td>Man-Like</td><td>Dragon</td><td>Dragon</td></tr>
+              <tr><td>7</td><td>Animals</td><td>Animals</td><td>Animals</td><td>Daemon*</td><td>Men</td><td>Animals</td><td>Man-Like</td></tr>
+              <tr><td>8</td><td>Men</td><td>Men</td><td>Swimmer</td><td>Dragon</td><td>Dragon</td><td>Undead</td><td>Daemon*</td></tr>
+              <tr><td>9</td><td>Daemon*</td><td>Daemon*</td><td>Swimmer</td><td>Strange</td><td>Daemon*</td><td>Strange</td><td>Strange</td></tr>
+              <tr><td>10</td><td>Strange</td><td>Strange</td><td>Strange</td><td>Strange</td><td>Strange</td><td>Strange</td><td>Strange</td></tr>
+            </tbody>
+          </table>
+          </div>
+        </details>
+
+        <details class="wilderness-section">
+          <summary>Encounter Type (d12)</summary>
+          <table class="wilderness-table">
+            <thead><tr><th>d12</th><th>Result</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Traces / Tracks</td></tr>
+              <tr><td>2</td><td>Lair</td></tr>
+              <tr><td>3–4</td><td>Hostile (attacks on sight)</td></tr>
+              <tr><td>5–6</td><td>Cautious / Stalking</td></tr>
+              <tr><td>7–8</td><td>Neutral (ignores unless provoked)</td></tr>
+              <tr><td>9–10</td><td>Friendly / Helpful</td></tr>
+              <tr><td>11</td><td>In distress / injured</td></tr>
+              <tr><td>12</td><td>Special event or omen</td></tr>
+            </tbody>
+          </table>
+        </details>
+
+        <details class="wilderness-section">
+          <summary>Hybrid Monster (d100)</summary>
+          <table class="wilderness-table">
+            <thead><tr><th>d100</th><th>Base Form</th></tr></thead>
+            <tbody>
+              <tr><td>01–10</td><td>Humanoid</td></tr>
+              <tr><td>11–20</td><td>Beast (mammal)</td></tr>
+              <tr><td>21–30</td><td>Reptilian</td></tr>
+              <tr><td>31–40</td><td>Avian</td></tr>
+              <tr><td>41–50</td><td>Insectoid</td></tr>
+              <tr><td>51–60</td><td>Aquatic / Amphibian</td></tr>
+              <tr><td>61–70</td><td>Plant / Fungal</td></tr>
+              <tr><td>71–80</td><td>Elemental</td></tr>
+              <tr><td>81–90</td><td>Aberration / Ooze</td></tr>
+              <tr><td>91–100</td><td>Undead / Spectral</td></tr>
+            </tbody>
+          </table>
+        </details>
+
+        <details class="wilderness-section">
+          <summary>Infusion Modifier (d20)</summary>
+          <table class="wilderness-table">
+            <thead><tr><th>d20</th><th>Modifier</th></tr></thead>
+            <tbody>
+              <tr><td>1–4</td><td>None (pure base form)</td></tr>
+              <tr><td>5–6</td><td>Fire / Magma</td></tr>
+              <tr><td>7–8</td><td>Ice / Frost</td></tr>
+              <tr><td>9–10</td><td>Lightning / Storm</td></tr>
+              <tr><td>11–12</td><td>Shadow / Void</td></tr>
+              <tr><td>13–14</td><td>Poison / Acid</td></tr>
+              <tr><td>15–16</td><td>Psychic / Psionic</td></tr>
+              <tr><td>17–18</td><td>Radiant / Holy</td></tr>
+              <tr><td>19</td><td>Necrotic</td></tr>
+              <tr><td>20</td><td>Chaos-touched (roll twice on Infusion)</td></tr>
+            </tbody>
+          </table>
+        </details>
+
+        <details class="wilderness-section">
+          <summary>Immunity Codes</summary>
+          <table class="wilderness-table">
+            <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+            <tbody>
+              <tr><td>A</td><td>Immune to non-magical weapons</td></tr>
+              <tr><td>B</td><td>Immune to fire</td></tr>
+              <tr><td>C</td><td>Immune to cold</td></tr>
+              <tr><td>D</td><td>Immune to lightning</td></tr>
+              <tr><td>E</td><td>Immune to poison</td></tr>
+              <tr><td>F</td><td>Immune to psychic / charm / fear</td></tr>
+              <tr><td>G</td><td>Resistant to all magic (advantage on saves)</td></tr>
+              <tr><td>*</td><td>Daemon — immune to A + E, resist G</td></tr>
+            </tbody>
+          </table>
+        </details>
+      </div>
+    `;
+  }
+
   // ── Init ──────────────────────────────────────────────────
 
   async function init() {
@@ -773,6 +925,7 @@
       buildTabs();
       buildTypeToggles();
       buildRegionToggles();
+      buildWildernessPanel();
       renderList();
     } catch (err) {
       console.warn('Init error:', err);
