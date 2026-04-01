@@ -164,6 +164,7 @@
 
   map.on('click', function (e) {
     if (e.originalEvent._travelHandled) return;
+    if (e.originalEvent._drawHandled) return;
     if (travelMode) return;
 
     const px = e.latlng.lng;
@@ -927,6 +928,18 @@
       buildRegionToggles();
       buildWildernessPanel();
       renderList();
+
+      // Initialize drawing tools & party token
+      if (window.initDrawTools) {
+        window.initDrawTools(map, {
+          pxToLatLng,
+          gridToPixel,
+          pixelToGrid,
+          formatGrid,
+          imageWidth: C.imageWidth,
+          imageHeight: C.imageHeight,
+        });
+      }
     } catch (err) {
       console.warn('Init error:', err);
     }
